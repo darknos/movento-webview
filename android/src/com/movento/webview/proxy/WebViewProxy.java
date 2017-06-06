@@ -18,7 +18,6 @@ import org.appcelerator.kroll.common.TiMessenger;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.TiBaseActivity;
 import org.appcelerator.titanium.TiC;
-import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.TiLifecycle.OnLifecycleEvent;
 import org.appcelerator.titanium.TiLifecycle.interceptOnBackPressedEvent;
 import org.appcelerator.titanium.proxy.TiViewProxy;
@@ -67,6 +66,7 @@ public class WebViewProxy extends TiViewProxy
 	
 	private static final int MSG_SET_HEADER = MSG_FIRST_ID + 123;
 	private static final int MSG_GET_SCROLL_HEIGHT = MSG_FIRST_ID + 124;
+	private static final int MSG_SET_ZOOMER = MSG_FIRST_ID + 125;
 
 	protected static final int MSG_LAST_ID = MSG_FIRST_ID + 999;
 	private static String fusername;
@@ -80,13 +80,8 @@ public class WebViewProxy extends TiViewProxy
 	{
 		super();
 		defaultValues.put(TiC.PROPERTY_OVER_SCROLL_MODE, 0);
-		defaultValues.put(TiC.PROPERTY_LIGHT_TOUCH_ENABLED, true);
+		defaultValues.put(TiC.PROPERTY_LIGHT_TOUCH_ENABLED, false);
 		defaultValues.put(TiC.PROPERTY_ENABLE_JAVASCRIPT_INTERFACE, true);
-	}
-
-	public WebViewProxy(TiContext context)
-	{
-		this();
 	}
 
 	@Override
@@ -242,6 +237,9 @@ public class WebViewProxy extends TiViewProxy
 					HashMap<String, Object> d = (HashMap<String, Object>) getProperty(OPTIONS_IN_SETHTML);
 					getWebView().setHtml(html, d);
 					return true;
+				case MSG_SET_ZOOMER:
+					getWebView().hideZoomButAllowZooming();
+					return true;
 			}
 		}
 		return super.handleMessage(msg);
@@ -260,6 +258,21 @@ public class WebViewProxy extends TiViewProxy
 		getWebView().setBasicAuthentication(username, password);
 
 	}
+	
+	@Kroll.method
+	public void hideZoomButAllowZooming()
+	{
+		TiUIWebView currWebView = getWebView();
+ 		if (currWebView != null) {
+ 			if (TiApplication.isUIThread()) {
+ 				currWebView.hideZoomButAllowZooming();
+ 			} else {
+ 				//
+ 				Message message = getMainHandler().obtainMessage(MSG_SET_ZOOMER);
+ 				message.sendToTarget();
+ 			}
+ 		}
+ 	}
 
 	@Kroll.method @Kroll.setProperty
 	public void setUserAgent(String userAgent)

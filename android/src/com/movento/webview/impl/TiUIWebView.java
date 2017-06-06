@@ -651,7 +651,7 @@ public class TiUIWebView extends TiUIView
 	{
 		client.getBinding().destroy();
 	}
-
+	
 	public void setPluginState(int pluginState)
 	{
 		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_MR1) {
@@ -718,6 +718,14 @@ public class TiUIWebView extends TiUIView
 		getWebView().getSettings().setSupportZoom(enabled);
 		getWebView().getSettings().setBuiltInZoomControls(enabled);
 	}
+	
+	public void hideZoomButAllowZooming()
+	{
+		getWebView().getSettings().setSupportZoom(true);
+		getWebView().getSettings().setBuiltInZoomControls(true);
+		getWebView().getSettings().setDisplayZoomControls(false);
+	}
+
 
 	public void setUserAgentString(String userAgentString)
 	{

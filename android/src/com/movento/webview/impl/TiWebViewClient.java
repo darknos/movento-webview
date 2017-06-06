@@ -109,7 +109,7 @@ public class TiWebViewClient extends WebViewClient
 		            KrollDict data = new KrollDict();
 		            data.put("url", url);
 		            data.put("message", "Webview did not load blacklisted url.");
-		            webView.getProxy().fireEvent(TiC.PROPERTY_ON_STOP_BLACKISTED_URL, data);
+		            webView.getProxy().fireEvent("blacklisted", data);
 		            return true;
 		        }
 		    }
